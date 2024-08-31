@@ -19,7 +19,7 @@ rustPlatform.buildRustPackage rec {
     owner = "simcra";
     repo = "scalcy";
     rev = "refs/tags/v${version}";
-    hash = "sha256-lbhmZjfVCGLJvuCuS4ooJxYF06aUd1V8SEZ3InW9vPI=";
+    hash = "sha256-H3gcyenX+mNz+Tfnqab589E4TmlCUTk3/EDf0IrVlJs=";
   };
 
   buildInputs = lib.optionals stdenv.isLinux [
