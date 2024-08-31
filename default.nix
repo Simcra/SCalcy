@@ -18,7 +18,7 @@ rustPlatform.buildRustPackage rec {
   src = fetchFromGitHub {
     owner = "simcra";
     repo = "scalcy";
-    rev = "v${version}";
+    rev = "refs/tags/v${version}";
     hash = "sha256-P5La8dVDhHqTFTZwbvWLscSSCp6p9HaCTtPiDucA1Wk=";
   };
 
