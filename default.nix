@@ -16,11 +16,9 @@ rustPlatform.buildRustPackage rec {
   pname = "scalcy";
   version = "0.1.2";
 
-  src = fetchFromGitHub {
-    owner = "simcra";
-    repo = "scalcy";
-    rev = "refs/tags/v${version}";
-    hash = "sha256-2j3UqH15kolzIeDxAWQbGael77p16ATJBiVH3v9H68o=";
+  src = builtins.path {
+    name = "src";
+    path = ./.;
   };
 
   buildInputs = lib.optionals stdenv.isLinux [
@@ -52,7 +50,7 @@ rustPlatform.buildRustPackage rec {
   ];
 
   cargoLock = {
-    lockFile = src + /Cargo.lock;
+    lockFile = "${src}/Cargo.lock";
   };
 
   meta = {
