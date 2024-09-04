@@ -1,15 +1,16 @@
-{ lib
-, stdenv
-, rustPlatform
-, fetchFromGitHub
-, makeWrapper
-, pkg-config
-, openssl
-, libxkbcommon
-, fontconfig
-, wayland
-, xorg ? null
-, ...
+{
+  lib,
+  stdenv,
+  rustPlatform,
+  fetchFromGitHub,
+  pkg-config,
+  openssl,
+  libxkbcommon,
+  autoPatchelfHook,
+  fontconfig,
+  wayland,
+  xorg ? null,
+  ...
 }:
 rustPlatform.buildRustPackage rec {
   pname = "scalcy";
@@ -19,31 +20,36 @@ rustPlatform.buildRustPackage rec {
     owner = "simcra";
     repo = "scalcy";
     rev = "refs/tags/v${version}";
-    hash = "sha256-H3gcyenX+mNz+Tfnqab589E4TmlCUTk3/EDf0IrVlJs=";
+    hash = "sha256-2j3UqH15kolzIeDxAWQbGael77p16ATJBiVH3v9H68o=";
   };
 
   buildInputs = lib.optionals stdenv.isLinux [
+    stdenv.cc.cc.lib
     libxkbcommon
     fontconfig
-
     # Wayland
     wayland
-
     # Xorg/X11
     xorg.libX11
     xorg.libXcursor
     xorg.libXrandr
     xorg.libXi
   ];
+
   nativeBuildInputs = lib.optionals stdenv.isLinux [
+    wayland
     pkg-config
     openssl
-    makeWrapper
+    autoPatchelfHook
   ];
 
-  postInstall = lib.optionalString stdenv.isLinux ''
-    wrapProgram $out/bin/scalcy --prefix LD_LIBRARY_PATH : "${lib.makeLibraryPath buildInputs}"
-  '';
+  appendRunpaths = [
+    (lib.makeLibraryPath [
+      fontconfig
+      wayland
+      libxkbcommon
+    ])
+  ];
 
   cargoLock = {
     lockFile = src + /Cargo.lock;
