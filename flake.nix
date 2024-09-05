@@ -6,37 +6,41 @@
     flake-parts.url = "github:hercules-ci/flake-parts";
   };
 
-  outputs = { nixpkgs, flake-parts, ... } @ inputs:
-  flake-parts.lib.mkFlake {inherit inputs; } {
-    systems = nixpkgs.lib.systems.flakeExposed;
-    perSystem = {pkgs, ...}: 
-      let
-        scalcyPkg = pkgs.callPackage ./default.nix { };
-        scalcyBin = nixpkgs.lib.getBin scalcyPkg;
-      in
-      {
-        packages = rec {
-          scalcy = scalcyPkg;
-          default = scalcy;
-        };
-
-        apps = rec {
-          scalcy = {
-            type = "app";
-            program = "${scalcyBin}/bin/scalcy";
+  outputs =
+    { nixpkgs, flake-parts, ... }@inputs:
+    flake-parts.lib.mkFlake { inherit inputs; } {
+      systems = nixpkgs.lib.systems.flakeExposed;
+      perSystem =
+        { pkgs, ... }:
+        let
+          scalcyPkg = pkgs.callPackage ./default.nix { };
+          scalcyBin = nixpkgs.lib.getBin scalcyPkg;
+        in
+        {
+          packages = rec {
+            scalcy = scalcyPkg;
+            default = scalcy;
           };
-          default = scalcy;
-        };
-
-        formatter = pkgs.nixpkgs-fmt;
-
-        devShells = rec {
-          scalcy = pkgs.mkShell {
-            buildInputs = scalcyPkg.buildInputs;
-            nativeBuildInputs = scalcyPkg.nativeBuildInputs;
+          checks = {
+            default = scalcyPkg;
           };
-          default = scalcy;
+          apps = rec {
+            scalcy = {
+              type = "app";
+              program = "${scalcyBin}/bin/scalcy";
+            };
+            default = scalcy;
+          };
+
+          formatter = pkgs.nixpkgs-fmt;
+
+          devShells = rec {
+            scalcy = pkgs.mkShell {
+              buildInputs = scalcyPkg.buildInputs;
+              nativeBuildInputs = scalcyPkg.nativeBuildInputs;
+            };
+            default = scalcy;
+          };
         };
-      };
     };
 }
