@@ -19,8 +19,8 @@
         {
           formatter = pkgs.nixpkgs-fmt;
           devShells.default = pkgs.mkShell {
-            buildInputs = scalcyPkg.buildInputs;
-            nativeBuildInputs = scalcyPkg.nativeBuildInputs;
+            inherit (scalcyPkg) buildInputs nativeBuildInputs;
+            LD_LIBRARY_PATH = "$LD_LIBRARY_PATH:${scalcyPkg.appendRunpaths}";
           };
 
           checks.default = scalcyPkg;
