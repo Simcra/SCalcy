@@ -1,16 +1,14 @@
-{
-  lib,
-  stdenv,
-  rustPlatform,
-  fetchFromGitHub,
-  pkg-config,
-  openssl,
-  libxkbcommon,
-  autoPatchelfHook,
-  fontconfig,
-  wayland,
-  xorg ? null,
-  ...
+{ lib
+, stdenv
+, rustPlatform
+, pkg-config
+, openssl
+, libxkbcommon
+, autoPatchelfHook
+, fontconfig
+, wayland
+, xorg ? null
+, ...
 }:
 rustPlatform.buildRustPackage rec {
   pname = "scalcy";

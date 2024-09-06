@@ -17,30 +17,18 @@
           scalcyBin = nixpkgs.lib.getBin scalcyPkg;
         in
         {
-          packages = rec {
-            scalcy = scalcyPkg;
-            default = scalcy;
-          };
-          checks = {
-            default = scalcyPkg;
-          };
-          apps = rec {
-            scalcy = {
-              type = "app";
-              program = "${scalcyBin}/bin/scalcy";
-            };
-            default = scalcy;
-          };
-
           formatter = pkgs.nixpkgs-fmt;
-
-          devShells = rec {
-            scalcy = pkgs.mkShell {
-              buildInputs = scalcyPkg.buildInputs;
-              nativeBuildInputs = scalcyPkg.nativeBuildInputs;
-            };
-            default = scalcy;
+          devShells.default = pkgs.mkShell {
+            buildInputs = scalcyPkg.buildInputs;
+            nativeBuildInputs = scalcyPkg.nativeBuildInputs;
           };
+
+          checks.default = scalcyPkg;
+          apps.default = {
+            type = "app";
+            program = "${scalcyBin}/bin/scalcy";
+          };
+          packages.default = scalcyPkg;
         };
     };
 }
