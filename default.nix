@@ -10,10 +10,13 @@
 , xorg ? null
 , ...
 }:
+let
+  manifest = (lib.importTOML ./Cargo.toml).package;
+in
 rustPlatform.buildRustPackage rec {
-  pname = "scalcy";
-  version = "0.1.2";
-
+  pname = manifest.name;
+  version = manifest.version;
+  cargoLock.lockFile = "${src}/Cargo.lock";
   src = builtins.path {
     name = "src";
     path = ./.;
@@ -23,8 +26,10 @@ rustPlatform.buildRustPackage rec {
     stdenv.cc.cc.lib
     libxkbcommon
     fontconfig
+
     # Wayland
     wayland
+
     # Xorg/X11
     xorg.libX11
     xorg.libXcursor
@@ -33,23 +38,12 @@ rustPlatform.buildRustPackage rec {
   ];
 
   nativeBuildInputs = lib.optionals stdenv.isLinux [
-    wayland
     pkg-config
     openssl
     autoPatchelfHook
   ];
 
-  appendRunpaths = [
-    (lib.makeLibraryPath [
-      fontconfig
-      wayland
-      libxkbcommon
-    ])
-  ];
-
-  cargoLock = {
-    lockFile = "${src}/Cargo.lock";
-  };
+  appendRunpaths = lib.makeLibraryPath buildInputs;
 
   meta = {
     mainProgram = pname;
