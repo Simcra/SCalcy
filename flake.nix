@@ -29,7 +29,8 @@
         {
           formatter = pkgs.nixpkgs-fmt;
           devShells.default = pkgs.mkShell {
-            inherit (scalcyPkg) buildInputs nativeBuildInputs;
+            inherit (scalcyPkg) buildInputs;
+            nativeBuildInputs = scalcyPkg.nativeBuildInputs ++ (with pkgs; [ rust-analyzer ]);
             LD_LIBRARY_PATH = "$LD_LIBRARY_PATH:${scalcyPkg.appendRunpaths}";
           };
 
