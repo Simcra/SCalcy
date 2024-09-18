@@ -7,8 +7,18 @@
   };
 
   outputs =
-    { nixpkgs, flake-parts, ... }@inputs:
+    { self
+    , nixpkgs
+    , flake-parts
+    , ...
+    } @ inputs:
     flake-parts.lib.mkFlake { inherit inputs; } {
+      flake = {
+        overlays.default = final: _prev: {
+          scalcy = self.packages.${final.system}.default;
+        };
+      };
+
       systems = nixpkgs.lib.systems.flakeExposed;
       perSystem =
         { pkgs, ... }:
